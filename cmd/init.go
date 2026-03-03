@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/rjdailey/labcheck/config"
+	"github.com/dFragmented/labcheck/config"
 	"github.com/spf13/cobra"
 )
 

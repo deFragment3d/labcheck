@@ -1,4 +1,4 @@
-module github.com/rjdailey/labcheck
+module github.com/dFragmented/labcheck
 
 go 1.25.0
 

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/rjdailey/labcheck/cmd"
+import "github.com/dFragmented/labcheck/cmd"
 
 func main() {
     cmd.Execute()
