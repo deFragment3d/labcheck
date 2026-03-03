@@ -11,7 +11,7 @@ A CLI tool for checking the health of your self-hosted homelab over SSH.
 ## Installation
 
 ```bash
-go install github.com/dFragmented/labcheck@latest
+go install github.com/deFragment3d/labcheck@latest
 ```
 
 ## Usage

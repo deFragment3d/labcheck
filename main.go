@@ -1,6 +1,6 @@
 package main
 
-import "github.com/dFragmented/labcheck/cmd"
+import "github.com/deFragment3d/labcheck/cmd"
 
 func main() {
     cmd.Execute()

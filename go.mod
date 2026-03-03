@@ -1,4 +1,4 @@
-module github.com/dFragmented/labcheck
+module github.com/deFragment3d/labcheck
 
 go 1.25.0
 
