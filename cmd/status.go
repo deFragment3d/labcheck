@@ -29,9 +29,7 @@ var statusCmd = &cobra.Command{
 		}
 
 		containers := parseContainers(out)
-		for _, c := range containers {
-			fmt.Printf("%+v\n", c)
-		}
+		return runTUI(containers)
 
 		return nil
 	},

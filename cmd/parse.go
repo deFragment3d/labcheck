@@ -1,6 +1,10 @@
 package cmd
 
-import "strings"
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
 
 func parseStatus(raw string) (state, uptime, health string) {
 	switch {
@@ -61,4 +65,82 @@ func parseContainers(out string) []Container {
 		containers = append(containers, c)
 	}
 	return containers
+}
+
+func sortContainers(containers []Container, col string, asc bool) []Container {
+	sort.Slice(containers, func(i, j int) bool {
+		if col == "uptime" {
+			ai := uptimeToMinutes(containers[i].Uptime)
+			bi := uptimeToMinutes(containers[j].Uptime)
+			if asc {
+				return ai < bi
+			}
+			return ai > bi
+		}
+
+		var a, b string
+		switch col {
+		case "name":
+			a, b = containers[i].Name, containers[j].Name
+		case "stack":
+			a, b = containers[i].Stack, containers[j].Stack
+		case "health":
+			a, b = containers[i].Health, containers[j].Health
+		default:
+			a, b = containers[i].Name, containers[j].Name
+		}
+
+		if asc {
+			return a < b
+		}
+		return a > b
+	})
+	return containers
+}
+
+func shortImage(image string) string {
+	parts := strings.Split(image, "/")
+	return parts[len(parts)-1]
+}
+
+func truncate(s string, max int) string {
+    if len(s) <= max {
+        return s
+    }
+    return s[:max-3] + "..."
+}
+
+func uptimeToMinutes(uptime string) int {
+	if strings.HasPrefix(uptime, "About an") || uptime == "an hour" {
+		return 60
+	}
+
+	parts := strings.Fields(uptime)
+	if len(parts) < 2 {
+		return 0
+	}
+
+	val := 0
+	fmt.Sscanf(parts[0], "%d", &val)
+
+	switch parts[1] {
+	case "seconds", "second":
+		return val
+	case "minutes", "minute":
+		return val
+	case "hours", "hour":
+		return val * 60
+	case "days", "day":
+		return val * 60 * 24
+	case "weeks", "week":
+		return val * 60 * 24 * 7
+	}
+	return 0
+}
+
+func normalizeUptime(uptime string) string {
+    if strings.HasPrefix(uptime, "About an") || uptime == "an hour" {
+        return "~1 hour"
+    }
+    return uptime
 }
