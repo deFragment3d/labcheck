@@ -21,16 +21,21 @@ func Connect(host string, port int, user string, keyPath string) (*Client, error
 		return nil, fmt.Errorf("failed to read private key: %w", err)
 	}
 
-	fmt.Print("SSH key passphrase: ")
-	passphrase, err := term.ReadPassword(int(os.Stdin.Fd()))
-	fmt.Println()
+	// try without passphrase first
+	signer, err := ssh.ParsePrivateKey(key)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read passphrase: %w", err)
-	}
+		// fall back to passphrase prompt
+		fmt.Print("SSH key passphrase: ")
+		passphrase, err := term.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Println()
+		if err != nil {
+			return nil, fmt.Errorf("failed to read passphrase: %w", err)
+		}
 
-	signer, err := ssh.ParsePrivateKeyWithPassphrase(key, passphrase)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse private key: %w", err)
+		signer, err = ssh.ParsePrivateKeyWithPassphrase(key, passphrase)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse private key: %w", err)
+		}
 	}
 
 	config := &ssh.ClientConfig{
